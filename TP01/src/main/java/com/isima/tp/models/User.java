@@ -32,9 +32,7 @@ public class User {
     @Column(nullable = false)
     private String pseudo;
 
-    @NotEmpty
-    @Column(nullable = false)
-    private String motDePasse; // Note : Doit être stocké haché (ex: BCrypt)
+
 
     private String zoneGeographique;
 

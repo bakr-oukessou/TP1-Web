@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme Dons - Welcome</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .public-links {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        .public-links h3 {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+        .public-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+        .public-links a:hover {
+            text-decoration: underline;
+        }
+        .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">🎁</div>
+    <h1>Plateforme Dons</h1>
+    <p class="subtitle">Bienvenue sur notre plateforme de dons</p>
+
+    <div th:if="${errorMessage}" class="error-message">
+        <strong>⚠️ Erreur:</strong>
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <p style="margin-bottom: 30px; color: #666;">
+        Connectez-vous pour accéderrrrrrrr à votre espace personnel
+    </p>
+
+    <a href="/oauth2/authorization/keycloak" class="btn">
+        🔐 Se connecter avec Keycloak
+    </a>
+
+    <div class="public-links">
+        <h3>Pages publiques</h3>
+        <a href="/public/about">À propos</a>
+        <a href="/public/contact">Contact</a>
+    </div>
+</div>
+</body>
+</html>

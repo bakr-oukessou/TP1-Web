@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Plateforme Dons</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar h1 {
+            font-size: 1.5em;
+        }
+        .navbar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .welcome-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .welcome-card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .user-info {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .user-info p {
+            margin: 10px 0;
+            color: #555;
+            font-size: 1.1em;
+        }
+        .user-info strong {
+            color: #333;
+            display: inline-block;
+            width: 150px;
+        }
+        .roles-container {
+            margin-top: 20px;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .dashboard-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .dashboard-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        .dashboard-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .dashboard-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: transform 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-logout {
+            background: #dc3545;
+            padding: 10px 25px;
+        }
+        details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #667eea;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <h1>🎁 Plateforme Dons</h1>
+    <div class="navbar-right">
+        <span>👤 <span th:text="${username}">User</span></span>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-logout">Déconnexion</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>Bienvenue, <span th:text="${name != null ? name : username}">User</span>! 👋</h2>
+        <p style="color: #666; font-size: 1.1em;">
+            Vous êtes connecté avec succès via Keycloak
+        </p>
+
+        <div class="user-info">
+            <h3 style="margin-bottom: 15px;">📋 Vos informations</h3>
+            <p><strong>Nom d'utilisateur:</strong> <span th:text="${username}">username</span></p>
+            <p><strong>Email:</strong> <span th:text="${email}">email@example.com</span></p>
+            <p th:if="${name}"><strong>Nom complet:</strong> <span th:text="${name}">Full Name</span></p>
+
+            <div class="roles-container">
+                <strong>Rôles:</strong><br>
+                <span th:each="role : ${roles}" class="role-badge" th:text="${role.authority}">ROLE</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card" sec:authorize="hasRole('USER')">
+            <div class="icon">👤</div>
+            <h3>Espace Utilisateur</h3>
+            <p>Accédez à votre tableau de bord utilisateur</p>
+            <a href="/user" class="btn">Accéder</a>
+        </div>
+
+        <div class="dashboard-card" sec:authorize="hasRole('ADMIN')">
+            <div class="icon">⚙️</div>
+            <h3>Administration</h3>
+            <p>Gérez la plateforme et les utilisateurs</p>
+            <a href="/admin" class="btn">Accéder</a>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="icon">📊</div>
+            <h3>Mon Profil</h3>
+            <p>Consultez et modifiez vos informations</p>
+            <a href="/profile" class="btn">Voir le profil</a>
+        </div>
+    </div>
+
+    <details>
+        <summary>🔍 Debug: Toutes les claims JWT</summary>
+        <pre th:text="${claims}"></pre>
+    </details>
+</div>
+</body>
+</html>
