@@ -20,7 +20,6 @@ public class RechercheSauv {
     @JoinColumn(name = "utilisateur_id", nullable = false)
     private User utilisateur;
 
-    // On stocke les critères sous forme de JSON ou de chaîne de requête
     @Lob
     private String criteres; // Ex: "motcle=velo&zone=paris&etat=BON_ETAT"
 

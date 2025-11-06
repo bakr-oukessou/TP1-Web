@@ -5,7 +5,6 @@ import com.isima.tp.Repositories.UserRepository;
 import com.isima.tp.models.Annonce;
 import com.isima.tp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +15,16 @@ public class UserService {
 
     private final UserRepository utilisateurRepository;
     private final AnnonceRepository annonceRepository;
-    private final PasswordEncoder passwordEncoder; // Nécessite l'intégration de Spring Security
 
     @Autowired
-    public UserService(UserRepository utilisateurRepository, AnnonceRepository annonceRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository utilisateurRepository, AnnonceRepository annonceRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.annonceRepository = annonceRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public User registerNewUser(User utilisateur) {
-        // Hacher le mot de passe avant de sauvegarder
-        utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
+        // Authentication is handled by Keycloak
         return utilisateurRepository.save(utilisateur);
     }
 

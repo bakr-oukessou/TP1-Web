@@ -24,7 +24,7 @@ public class Lot {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createur_id", nullable = false)
-    private Utilisateur createur;
+    private User createur;
 
     // Les annonces incluses dans ce lot
     // 'mappedBy = "lot"' signifie que l'entité Annonce gère la clé étrangère
