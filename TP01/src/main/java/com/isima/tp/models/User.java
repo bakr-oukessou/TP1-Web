@@ -32,8 +32,6 @@ public class User {
     @Column(nullable = false)
     private String pseudo;
 
-
-
     private String zoneGeographique;
 
     @OneToMany(mappedBy = "donneur", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

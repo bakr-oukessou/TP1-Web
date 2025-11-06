@@ -4,6 +4,7 @@ import com.isima.tp.Repositories.MotCleRepository;
 import com.isima.tp.models.Annonce;
 import com.isima.tp.models.MotCle;
 import com.isima.tp.models.User;
+import com.isima.tp.models.enums.EtatObjet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,5 +69,73 @@ public class AnnonceService {
 
     public List<Annonce> findByKeyword(String keyword) {
         return annonceRepository.findByMotsCles_Nom(keyword.toLowerCase());
+    }
+    
+    // ===== Methods for AnnonceController =====
+    
+    /**
+     * Save an annonce (simplified version without keywords parameter)
+     */
+    @Transactional
+    public Annonce saveAnnonce(Annonce annonce) {
+        // Extract keywords from the annonce if they exist
+        Set<String> motsClesNouveaux = annonce.getMotsCles() != null 
+            ? annonce.getMotsCles().stream()
+                .map(MotCle::getNom)
+                .collect(Collectors.toSet())
+            : new HashSet<>();
+        
+        return save(annonce, motsClesNouveaux);
+    }
+    
+    /**
+     * Get all annonces
+     */
+    public List<Annonce> getAllAnnonces() {
+        return annonceRepository.findAll();
+    }
+    
+    /**
+     * Get annonce by ID
+     */
+    public Optional<Annonce> getAnnonceById(Long id) {
+        return findById(id);
+    }
+    
+    /**
+     * Get annonces by state
+     */
+    public List<Annonce> getAnnoncesByEtat(EtatObjet etat) {
+        return annonceRepository.findByEtat(etat);
+    }
+    
+    /**
+     * Get annonces by geographic zone
+     */
+    public List<Annonce> getAnnoncesByZone(String zone) {
+        return annonceRepository.findByZoneGeographiqueContainingIgnoreCase(zone);
+    }
+    
+    /**
+     * Get annonces by donor (donneur)
+     */
+    public List<Annonce> getAnnoncesByDonneur(Long donneurId) {
+        return annonceRepository.findByDonneurId(donneurId);
+    }
+    
+    /**
+     * Get annonces by keyword
+     */
+    public List<Annonce> getAnnoncesByMotCle(String motcle) {
+        return findByKeyword(motcle);
+    }
+    
+    /**
+     * Delete an annonce (simplified without user verification)
+     * In production, you should verify the user has permission to delete
+     */
+    @Transactional
+    public void deleteAnnonce(Long id) {
+        annonceRepository.deleteById(id);
     }
 }
