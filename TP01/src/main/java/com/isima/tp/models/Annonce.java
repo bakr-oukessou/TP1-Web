@@ -52,7 +52,7 @@ public class Annonce {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "donneur_id", nullable = false)
-    private Utilisateur donneur;
+    private User donneur;
 
     // Mots-clés associés
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -65,7 +65,7 @@ public class Annonce {
 
     // Inverse de la relation 'favoris' dans Utilisateur
     @ManyToMany(mappedBy = "favoris", fetch = FetchType.LAZY)
-    private Set<Utilisateur> utilisateursFavoris = new HashSet<>();
+    private Set<User> utilisateursFavoris = new HashSet<>();
 
     // Lot auquel cette annonce peut appartenir (optionnel)
     @ManyToOne(fetch = FetchType.LAZY)

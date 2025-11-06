@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une annonce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { padding-top: 60px; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="bi bi-gift"></i> Plateforme de Dons
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/annonces}">Annonces</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/annonces/new}">Créer une annonce</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-plus-circle"></i> Créer une nouvelle annonce
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="annonceForm">
+                            <div class="mb-3">
+                                <label for="titre" class="form-label">Titre *</label>
+                                <input type="text" class="form-control" id="titre" name="titre" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description *</label>
+                                <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="etat" class="form-label">État de l'objet *</label>
+                                <select class="form-select" id="etat" name="etat" required>
+                                    <option value="">Sélectionnez un état</option>
+                                    <option value="NEUF">Neuf</option>
+                                    <option value="BON_ETAT">Bon état</option>
+                                    <option value="USAGE">Usagé</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="zoneGeographique" class="form-label">Zone géographique *</label>
+                                <input type="text" class="form-control" id="zoneGeographique" name="zoneGeographique" 
+                                       placeholder="Ex: Paris, Lyon..." required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="modeLivraison" class="form-label">Mode de livraison *</label>
+                                <select class="form-select" id="modeLivraison" name="modeLivraison" required>
+                                    <option value="">Sélectionnez un mode</option>
+                                    <option value="REMISE_EN_MAIN_PROPRE">Remise en main propre</option>
+                                    <option value="ENVOI_POSTAL">Envoi postal</option>
+                                    <option value="LIVRAISON">Livraison</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="donneurId" class="form-label">ID Utilisateur (temporaire) *</label>
+                                <input type="number" class="form-control" id="donneurId" name="donneurId" 
+                                       value="1" required>
+                                <small class="text-muted">En production, ceci sera récupéré automatiquement via Keycloak</small>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> Les champs marqués d'un astérisque (*) sont obligatoires.
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-check-circle"></i> Publier l'annonce
+                                </button>
+                                <a th:href="@{/annonces}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Annuler
+                                </a>
+                            </div>
+                        </form>
+
+                        <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+                            <i class="bi bi-check-circle"></i> Annonce créée avec succès !
+                        </div>
+                        <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;">
+                            <i class="bi bi-exclamation-triangle"></i> Erreur lors de la création de l'annonce.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('annonceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                titre: document.getElementById('titre').value,
+                description: document.getElementById('description').value,
+                etat: document.getElementById('etat').value,
+                zoneGeographique: document.getElementById('zoneGeographique').value,
+                modeLivraison: document.getElementById('modeLivraison').value,
+                donneur: {
+                    id: parseInt(document.getElementById('donneurId').value)
+                }
+            };
+
+            try {
+                const response = await fetch('/api/annonces', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    setTimeout(() => {
+                        window.location.href = '/annonces';
+                    }, 1500);
+                } else {
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -49,4 +49,33 @@ public class MessageService {
     public List<Message> getConversation(Long userId1, Long userId2) {
         return messageRepository.findConversation(userId1, userId2);
     }
+    
+    /**
+     * Récupère tous les messages reçus par un utilisateur
+     */
+    public List<Message> getMessagesRecus(Long destinataireId) {
+        return messageRepository.findByDestinataireId(destinataireId);
+    }
+    
+    /**
+     * Récupère tous les messages envoyés par un utilisateur
+     */
+    public List<Message> getMessagesEnvoyes(Long expediteurId) {
+        return messageRepository.findByExpediteurId(expediteurId);
+    }
+    
+    /**
+     * Marque un message comme lu
+     */
+    @Transactional
+    public void markAsRead(Long messageId) {
+        Optional<Message> messageOpt = messageRepository.findById(messageId);
+        if (messageOpt.isPresent()) {
+            Message message = messageOpt.get();
+            message.setLu(true);
+            messageRepository.save(message);
+        } else {
+            throw new IllegalArgumentException("Message non trouvé.");
+        }
+    }
 }
