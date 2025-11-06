@@ -1,6 +1,7 @@
 package com.isima.tp.controllers;
 
 
+import com.isima.tp.security.CustomOidcUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -21,7 +22,7 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-    public String home(Model model, @AuthenticationPrincipal OidcUser principal) {
+    public String home(Model model, @AuthenticationPrincipal CustomOidcUser principal) {
         if (principal != null) {
             model.addAttribute("username", principal.getPreferredUsername());
             model.addAttribute("email", principal.getEmail());

@@ -12,14 +12,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   security:
     oauth2:
       client:
         registration:
           keycloak:
             client-id: spring-app
-            client-secret: OeBVN1PdzwMrVIOMjQ6qpOL2xkIgLmFW
+            client-secret: hroioPNwlrYstVMwGCsIyucVXzHTvNsr
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:

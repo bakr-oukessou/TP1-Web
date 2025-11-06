@@ -1,0 +1,13 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak-dons
+    ports:
+      - "9090:8080" # Keycloak sera accessible sur http://localhost:9090
+    environment:
+      KEYCLOAK_ADMIN: admin        # Identifiant pour la console d'admin
+      KEYCLOAK_ADMIN_PASSWORD: admin # Mot de passe pour la console d'admin
+    command: start-dev # Lance Keycloak en mode développement

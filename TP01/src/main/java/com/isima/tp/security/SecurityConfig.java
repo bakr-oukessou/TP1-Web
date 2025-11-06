@@ -16,17 +16,32 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity  // For @PreAuthorize
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    private final CustomOidcUserService customOidcUserService;
+
+    public SecurityConfig(CustomOidcUserService customOidcUserService) {
+        this.customOidcUserService = customOidcUserService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/public/**", "/css/**", "/js/**", "/error").permitAll()
+                        .requestMatchers("/", "/public/**", "/css/**", "/js/**", "/error", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")  // Disable CSRF for H2 Console
+                )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())  // Allow frames from same origin for H2 Console
+                )
                 .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(customOidcUserService)
+                        )
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/?error=true")
                 )
@@ -40,24 +55,14 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Maps Keycloak roles to Spring Security authorities.
-     * This bean is automatically picked up by Spring Security.
-     */
     @Bean
     public GrantedAuthoritiesMapper userAuthoritiesMapper() {
         return (authorities) -> {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-
             authorities.forEach(authority -> {
-                // Keep existing authorities
                 mappedAuthorities.add(authority);
-
-                // Extract Keycloak roles from OidcUserAuthority
                 if (authority instanceof OidcUserAuthority oidcUserAuthority) {
                     Map<String, Object> userInfo = oidcUserAuthority.getUserInfo().getClaims();
-
-                    // Extract realm roles
                     Map<String, Object> realmAccess = (Map<String, Object>) userInfo.get("realm_access");
                     if (realmAccess != null && realmAccess.containsKey("roles")) {
                         Collection<String> roles = (Collection<String>) realmAccess.get("roles");
@@ -65,8 +70,6 @@ public class SecurityConfig {
                                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                                 .collect(Collectors.toList()));
                     }
-
-                    // Extract client roles (optional)
                     Map<String, Object> resourceAccess = (Map<String, Object>) userInfo.get("resource_access");
                     if (resourceAccess != null) {
                         Map<String, Object> clientResource = (Map<String, Object>) resourceAccess.get("spring-app");
@@ -79,7 +82,6 @@ public class SecurityConfig {
                     }
                 }
             });
-
             return mappedAuthorities;
         };
     }
