@@ -1,0 +1,38 @@
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: spring-app
+            client-secret: hroioPNwlrYstVMwGCsIyucVXzHTvNsr
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:9090/realms/PlateformeDons
+
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/PlateformeDons
