@@ -1,0 +1,16 @@
+package com.isima.tp.models;
+
+import java.time.LocalDateTime;
+
+public class User {
+	int id;
+	String username;
+	String email;
+	String Password;
+	LocalDateTime createdAt;
+	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+	
+}

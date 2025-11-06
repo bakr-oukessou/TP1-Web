@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\pc\Desktop\GLIA\WEB\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1354299168.index
+965285456.index
+2643088731.index
+1336485934.index
+4091015463.index
+3752477887.index

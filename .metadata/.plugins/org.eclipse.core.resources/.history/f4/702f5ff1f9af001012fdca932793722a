@@ -1,0 +1,7 @@
+package com.isima.tp.models;
+
+public class Annonce {
+	int id;
+	String title;
+	Text description;
+}

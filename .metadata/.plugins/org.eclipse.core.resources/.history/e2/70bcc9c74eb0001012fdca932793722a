@@ -1,0 +1,9 @@
+package com.isima.tp.models;
+
+import org.attoparser.dom.Text;
+
+public class Annonce {
+	int id;
+	String title;
+	Text description;
+}

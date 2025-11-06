@@ -1,0 +1,5 @@
+package com.isima.tp.models;
+
+public class Annonce {
+
+}
